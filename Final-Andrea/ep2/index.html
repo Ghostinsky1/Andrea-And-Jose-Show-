@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="The Andrea &amp; Jose Show, Episode II: The First Bite.">
+<title>The First Bite</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500;1,6..96,700&family=Manrope:wght@400;500;600;800&display=swap">
+<style>
+:root{
+  --bg:#0c0a08; --bg-2:#141110; --bar:#000;
+  --ink:#f4ead9; --ink-2:#c9b9a2; --mute:#8d8071;
+  --amber:#e6a23c; --amber-soft:#f2c46a; --ember:#c8542c;
+  --uno-red:#d7263d; --uno-yellow:#f5c531; --uno-blue:#2f6fd6; --uno-green:#2e9e5b;
+  --bow:#f0a4c2;
+  --serif:"Bodoni Moda","Bodoni 72","Didot",Georgia,serif;
+  --sans:"Manrope","Helvetica Neue",Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+
+/* film grain: one static noise tile, drifted in steps */
+.grain{position:fixed;inset:-40%;width:180%;height:180%;pointer-events:none;z-index:40;opacity:.07;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .75 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:220px 220px;animation:grain 1.1s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-4%)}60%{transform:translate(-4%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+@media (prefers-reduced-motion:reduce){.grain{animation:none}}
+
+/* letterbox rails: the page's recurring motif */
+.rail{height:14px;background:var(--bar);position:relative}
+.rail::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(230,162,60,.55),transparent)}
+.rail.top::after{bottom:auto;top:0}
+
+.wrap{width:100%;max-width:980px;margin:0 auto;padding-inline:16px}
+
+/* top toggle */
+.padbtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;z-index:50;background:rgba(12,10,8,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(244,234,217,.22);color:var(--ink-2);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:7px;align-items:center}
+.padbtn .dot{width:7px;height:7px;border-radius:50%;background:var(--mute);transition:background .3s,box-shadow .3s}
+.padbtn[aria-pressed="true"] .dot{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.padbtn[aria-pressed="true"]{color:var(--ink)}
+
+/* ===== 1. the film ===== */
+.cinema{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-block:56px 40px;gap:22px;position:relative}
+.cinema::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 45%,rgba(230,162,60,.10),transparent 70%);pointer-events:none}
+.slate{text-align:center;position:relative}
+.slate .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);font-weight:600}
+.slate h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(44px,9vw,84px);line-height:1;margin:10px 0 0;letter-spacing:-.01em;text-wrap:balance;color:var(--ink)}
+.slate .sub{margin:12px 0 0;font-size:13px;color:var(--mute);letter-spacing:.05em}
+.slate .sub b{color:var(--ink-2);font-weight:600;white-space:nowrap}
+
+.screen{position:relative;width:100%;background:#000;aspect-ratio:16/9;max-width:100%;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(244,234,217,.06);overflow:hidden}
+.screen video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+.player .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);transition:opacity .4s;border:0;padding:0;width:100%}
+.player .overlay .play{width:78px;height:78px;border-radius:50%;background:rgba(12,10,8,.55);border:1.5px solid var(--amber);display:grid;place-items:center;transition:transform .25s,background .25s;backdrop-filter:blur(4px)}
+.player .overlay:hover .play{transform:scale(1.06);background:rgba(230,162,60,.22)}
+.player .overlay .play svg{width:28px;height:28px;margin-left:5px;fill:var(--amber-soft)}
+.player.playing .overlay{opacity:0;pointer-events:none}
+.player.paused .overlay{opacity:1;pointer-events:auto}
+.player .bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(244,234,217,.12);z-index:3}
+.player .bar i{display:block;height:100%;width:0;background:var(--amber);transition:width .25s linear}
+.player .replay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(0,0,0,.55);border:0;width:100%;color:var(--ink)}
+.player.ended .replay{display:flex}
+.screen.ended .overlay{opacity:0;pointer-events:none}
+.vlogbox.ended .overlay{opacity:1;pointer-events:auto}
+.player .replay span{font-family:var(--serif);font-style:italic;font-size:26px}
+.player .replay small{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber)}
+.runtime{font-size:12px;color:var(--mute);letter-spacing:.14em;text-transform:uppercase;display:flex;gap:10px;align-items:center;margin:0}
+.runtime::before,.runtime::after{content:"";width:22px;height:1px;background:rgba(141,128,113,.5)}
+
+.cue{position:relative;height:44px;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--amber);font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;opacity:0;transform:translateY(-6px);transition:opacity .8s,transform .8s;pointer-events:none}
+.cue.show{opacity:1;transform:none;pointer-events:auto}
+.cue .arrow{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.cue .arrow{animation:none}}
+
+/* ===== 2. the real footage ===== */
+.section{padding-block:64px}
+.kicker{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);font-weight:600;margin:0}
+.section h2{font-family:var(--serif);font-weight:500;font-style:italic;font-size:clamp(32px,6vw,52px);line-height:1.05;margin:8px 0 0;text-wrap:balance}
+.section .lede{color:var(--ink-2);max-width:56ch;margin:14px 0 0;font-size:15px}
+.section .lede em{color:var(--ink);font-style:normal;font-weight:600}
+.vlogbox{margin-top:28px;position:relative;background:#000;aspect-ratio:854/482;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px rgba(244,234,217,.06);overflow:hidden}
+.vlogbox video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+.player .tapsound{z-index:6;position:absolute;right:12px;bottom:14px;z-index:4;background:rgba(12,10,8,.72);border:1px solid rgba(244,234,217,.28);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;letter-spacing:.06em;backdrop-filter:blur(6px);display:flex;gap:8px;align-items:center}
+.player .tapsound.on{border-color:var(--amber);color:var(--amber-soft)}
+.player .tapsound svg{width:14px;height:14px;fill:currentColor}
+.polaroid-tag{position:absolute;left:12px;top:12px;z-index:4;background:rgba(244,234,217,.9);color:#2a211a;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:2px;transform:rotate(-2deg)}
+
+/* ===== 3. the game ===== */
+.game{text-align:center;position:relative}
+.game .lede{margin-inline:auto}
+
+/* soft glow pooled under the hand, breathing */
+.hand{position:relative;height:270px;margin:34px auto 0;max-width:640px;width:100%;perspective:1400px}
+.hand::before{content:"";position:absolute;left:50%;top:44%;width:min(560px,96vw);height:300px;transform:translate(-50%,-50%);pointer-events:none;z-index:0;
+  background:radial-gradient(52% 46% at 50% 50%,rgba(230,162,60,.30),rgba(230,162,60,.10) 45%,transparent 72%);
+  filter:blur(22px);opacity:.85;animation:breathe 6.5s ease-in-out infinite}
+.hand::after{content:"";position:absolute;left:50%;bottom:6px;width:min(340px,78vw);height:26px;transform:translateX(-50%);pointer-events:none;z-index:0;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.72),transparent 70%);filter:blur(9px)}
+@keyframes breathe{0%,100%{opacity:.62;transform:translate(-50%,-50%) scale(.96)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.hand.locked::before{animation:none;opacity:1;background:radial-gradient(52% 46% at 50% 50%,rgba(242,196,106,.5),rgba(230,162,60,.16) 48%,transparent 74%)}
+
+.card{position:absolute;left:50%;top:0;width:104px;height:156px;margin-left:-52px;transform-origin:50% 190%;border:0;background:transparent;padding:0;
+  perspective:900px;z-index:1;
+  transition:transform .62s cubic-bezier(.2,.8,.2,1),opacity .6s,filter .6s;
+  transform:rotate(var(--a)) translateY(var(--y))}
+/* dealt in from the deck, one after another */
+.hand.predeal .card{opacity:0;transform:rotate(0deg) translateY(130px) scale(.8)}
+.hand.predeal.dealt .card{opacity:1;transform:rotate(var(--a)) translateY(var(--y));
+  transition:transform .75s cubic-bezier(.2,.9,.25,1) var(--d,0s),opacity .5s var(--d,0s)}
+/* one cheap composited float for the whole hand, not five */
+.hand.dealt:not(.predeal):not(.locked){animation:handfloat 7s ease-in-out infinite;will-change:transform}
+@keyframes handfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.card .inner{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.45,.05,.2,1)}
+.card .face{display:block;position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 22px rgba(230,162,60,.16)}
+.card:hover:not(:disabled){transform:rotate(var(--a)) translateY(calc(var(--y) - 16px)) scale(1.03)}
+.card:hover:not(:disabled) .face{box-shadow:0 18px 40px rgba(0,0,0,.65),0 0 34px rgba(242,196,106,.42)}
+.card:active:not(:disabled){transform:rotate(var(--a)) translateY(calc(var(--y) - 8px)) scale(.99)}
+.card:disabled{cursor:default}
+/* back: black, red oval with yellow rim, white wordmark */
+.back{background:#111;border:5px solid #f4f1ea;display:grid;place-items:center;overflow:hidden}
+.back::before{content:"";position:absolute;width:150%;height:62%;left:-25%;top:19%;background:var(--uno-red);border-radius:50%;transform:rotate(-32deg);box-shadow:inset 0 0 0 4px var(--uno-yellow)}
+.back .mark{position:relative;font-family:var(--serif);font-style:italic;font-weight:700;font-size:26px;color:#fff;letter-spacing:.02em;text-shadow:2px 2px 0 var(--uno-yellow);transform:rotate(-12deg)}
+/* front: color card, white oval, prize icon */
+.front{transform:rotateY(180deg);border:5px solid #f4f1ea;background:var(--c);display:grid;place-items:center;overflow:hidden}
+.front::before{content:"";position:absolute;width:150%;height:62%;left:-25%;top:19%;background:#fff;border-radius:50%;transform:rotate(-32deg)}
+.front .glyph{position:relative;font-size:38px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.front .pip{position:absolute;font-size:12px;font-weight:800;color:#fff;text-shadow:1px 1px 0 rgba(0,0,0,.35)}
+.front .pip.tl{top:6px;left:8px}.front .pip.br{bottom:6px;right:8px;transform:rotate(180deg)}
+.hand.locked .card{animation:none}
+/* the four you didn't take slide back into the deck */
+.hand.locked .card:not(.picked){opacity:0;filter:grayscale(1) blur(2px);pointer-events:none;
+  transform:rotate(calc(var(--a) * .25)) translateY(130px) scale(.8);transition-delay:0s}
+.hand.locked .card.picked{transform-origin:50% 50%;transform:rotate(0) translateY(26px) scale(1.45);z-index:5;transition-delay:0s}
+.hand.locked .card.picked .inner{transform:rotateY(180deg)}
+.hand.locked .card.picked .face{box-shadow:0 26px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.1),0 0 46px rgba(242,196,106,.55)}
+.hand.locked .card.picked .front{animation:bloom 1.5s .55s ease-out both}
+@keyframes bloom{0%{filter:brightness(1.55) saturate(1.25)}100%{filter:none}}
+.card.picked{cursor:default}
+
+.reveal{margin-top:8px;opacity:0;transform:translateY(10px);transition:opacity .9s .5s,transform .9s .5s;min-height:120px}
+.reveal.show{opacity:1;transform:none}
+.reveal .won{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);font-weight:600;margin:0}
+.reveal .prize{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(38px,8vw,64px);line-height:1;margin:8px 0 0;text-wrap:balance;
+  text-shadow:0 0 34px rgba(242,196,106,.45),0 0 90px rgba(230,162,60,.22)}
+.reveal .note{color:var(--ink-2);max-width:44ch;margin:14px auto 0;font-size:16px}
+.reveal .shot{margin:22px auto 0;display:inline-flex;gap:9px;align-items:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border:1px dashed rgba(230,162,60,.55);padding:9px 14px;border-radius:999px;background:rgba(230,162,60,.06)}
+.reveal .shot svg{width:14px;height:14px;fill:none;stroke:var(--amber);stroke-width:1.8}
+.hint{margin:16px 0 0;font-size:12px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase}
+.hand.locked + .hint{opacity:0}
+
+/* ===== 4. ending ===== */
+.end{text-align:center;padding-block:40px 90px}
+.end p{font-family:var(--serif);font-style:italic;font-size:clamp(26px,5vw,38px);margin:0;color:var(--ink)}
+.end small{display:block;margin-top:16px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute)}
+
+canvas.confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:45}
+
+@media (min-width:720px){
+  .cinema{padding-block:72px 48px}
+  .hand{height:330px}
+  .card{width:132px;height:198px;margin-left:-66px}
+  .back .mark{font-size:32px}
+  .front .glyph{font-size:48px}
+  .hand.locked .card.picked{transform:rotate(0) translateY(10px) scale(1.4)}
+}
+@media (prefers-reduced-motion:reduce){
+  .card,.card .inner,.reveal,.cue,.player .overlay{transition-duration:.01ms}
+  .hand::before,.hand.dealt,.hand.locked .card.picked .front{animation:none}
+  .hand.predeal .card{opacity:1;transform:rotate(var(--a)) translateY(var(--y))}
+}
+</style>
+<style>html,body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+<button class="padbtn" id="padBtn" type="button" aria-pressed="false" aria-label="Toggle the music"><span class="dot"></span><span id="padLbl">Music off</span></button>
+
+<!-- audio-only mp4s: these play through the phone's media channel, so the ringer switch can't silence them -->
+<video id="padAudio" loop playsinline preload="none" aria-hidden="true" tabindex="-1" style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px;top:-10px"><source src="media/ambient.mp4" type="video/mp4"><source src="media/ambient.webm" type="video/webm"></video>
+<video id="stingAudio" playsinline preload="none" aria-hidden="true" tabindex="-1" style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px;top:-10px"><source src="media/reveal.mp4" type="video/mp4"><source src="media/reveal.webm" type="video/webm"></video>
+
+<div class="rail top" aria-hidden="true"></div>
+
+<!-- 1. THE FILM -->
+<section class="cinema wrap" id="film">
+  <div class="slate">
+    <p class="eyebrow">The Andrea &amp; Jose Show &middot; Episode II</p>
+    <h1>The First Bite</h1>
+    <p class="sub">A short film in two pigeons, with score &middot; <b>Brick River Cider, St. Louis</b></p>
+  </div>
+
+  <div class="screen player paused" id="screen">
+    <video id="filmVid" src="media/episode2-kr.mp4" poster="media/episode2-kr-poster.jpg" playsinline preload="metadata" muted aria-label="Episode 2: The First Bite"></video>
+    <button class="overlay" id="filmPlay" type="button" aria-label="Play the film">
+      <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17l14-8.5z"/></svg></span>
+    </button>
+    <button class="replay" id="filmReplay" type="button"><small>Fin</small><span>watch it again</span></button>
+    <button class="tapsound" id="filmSound" type="button" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3z"/></svg><span>tap for sound</span></button>
+    <div class="bar" aria-hidden="true"><i id="filmBar"></i></div>
+  </div>
+
+  <p class="runtime">sound on &middot; 58 seconds</p>
+  <div class="cue" id="cue" aria-live="polite"><span>scroll down when it's over</span><span class="arrow" aria-hidden="true">&darr;</span></div>
+</section>
+
+<div class="rail" aria-hidden="true"></div>
+
+<!-- 2. THE REAL FOOTAGE -->
+<section class="section wrap" id="real">
+  <p class="kicker">The actual review</p>
+  <h2>June 2025. Brick River Cider, St. Louis.</h2>
+  <p class="lede">Chicken and waffles for you, a burger for me, one cider each, and a camera we had no business pointing at our food. <em>You gave me the first bite.</em> I remember that more than the burger.</p>
+  <div class="vlogbox player paused" id="vlogbox">
+    <span class="polaroid-tag">Real tape</span>
+    <video id="vlogVid" src="media/vlog.mp4" poster="media/vlog-poster.jpg" playsinline preload="metadata" muted aria-label="The real food review vlog, June 2025"></video>
+    <button class="overlay" id="vlogPlay" type="button" aria-label="Play the vlog">
+      <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17l14-8.5z"/></svg></span>
+    </button>
+    <button class="tapsound" id="vlogSound" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3z"/></svg><span>tap for sound</span></button>
+    <div class="bar" aria-hidden="true"><i id="vlogBar"></i></div>
+  </div>
+</section>
+
+<div class="rail" aria-hidden="true"></div>
+
+<!-- 3. THE GAME -->
+<section class="section wrap game" id="game">
+  <p class="kicker">Post-credits scene</p>
+  <h2>You always win at Uno anyway.</h2>
+  <p class="lede">So let's skip the part where I lose. Five cards, face down. Pick one. Whatever's under it is yours, and you only get one pick, so choose like you mean it.</p>
+
+  <div class="hand" id="hand" role="group" aria-label="Five face-down cards. Pick one.">
+    <button class="card" type="button" style="--a:-22deg;--y:22px" aria-label="Card one"><span class="inner"><span class="face back"><span class="mark">ONE</span></span><span class="face front"><span class="pip tl">&hearts;</span><span class="glyph"></span><span class="pip br">&hearts;</span></span></span></button>
+    <button class="card" type="button" style="--a:-12deg;--y:8px" aria-label="Card two"><span class="inner"><span class="face back"><span class="mark">ONE</span></span><span class="face front"><span class="pip tl">&hearts;</span><span class="glyph"></span><span class="pip br">&hearts;</span></span></span></button>
+    <button class="card" type="button" style="--a:0deg;--y:0px" aria-label="Card three"><span class="inner"><span class="face back"><span class="mark">ONE</span></span><span class="face front"><span class="pip tl">&hearts;</span><span class="glyph"></span><span class="pip br">&hearts;</span></span></span></button>
+    <button class="card" type="button" style="--a:12deg;--y:8px" aria-label="Card four"><span class="inner"><span class="face back"><span class="mark">ONE</span></span><span class="face front"><span class="pip tl">&hearts;</span><span class="glyph"></span><span class="pip br">&hearts;</span></span></span></button>
+    <button class="card" type="button" style="--a:22deg;--y:22px" aria-label="Card five"><span class="inner"><span class="face back"><span class="mark">ONE</span></span><span class="face front"><span class="pip tl">&hearts;</span><span class="glyph"></span><span class="pip br">&hearts;</span></span></span></button>
+  </div>
+  <p class="hint" id="hint">tap a card</p>
+
+  <div class="reveal" id="reveal" aria-live="polite">
+    <p class="won">You drew</p>
+    <p class="prize" id="prizeName"></p>
+    <p class="note" id="prizeNote"></p>
+    <span class="shot"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>screenshot this. it's your receipt.</span>
+  </div>
+</section>
+
+<div class="rail" aria-hidden="true"></div>
+
+<!-- 4. ENDING -->
+<section class="end wrap">
+  <p>&mdash; love, Jose</p>
+  <small>Episode II &middot; The First Bite</small>
+</section>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= SOUND =================
+   A real looping track in an audio-only mp4, played by a hidden <video> so iOS routes it
+   through the media channel (Web Audio gets silenced by the ringer switch; this doesn't).
+   One fader handles on/off and ducking under the film and the vlog. */
+const padEl=$('#padAudio'),stingEl=$('#stingAudio');
+let on=false,ducked=false,fadeTimer=null;
+const PAD_VOL=0.5;
+padEl.volume=0; stingEl.volume=0.85;
+function fadeTo(target,ms){
+  if(fadeTimer) clearInterval(fadeTimer);
+  const from=padEl.volume,steps=Math.max(1,Math.round(ms/50));let i=0;
+  fadeTimer=setInterval(()=>{
+    i++; const v=from+(target-from)*(i/steps);
+    try{padEl.volume=Math.min(1,Math.max(0,v));}catch(e){}
+    if(i>=steps){clearInterval(fadeTimer);fadeTimer=null;
+      if(target===0&&!padEl.paused) padEl.pause();}
+  },50);
+}
+function applyPad(){
+  const want=on&&!ducked&&!document.hidden;
+  if(want){
+    const p=padEl.play();
+    if(p&&p.catch) p.catch(()=>{});
+    fadeTo(PAD_VOL,900);
+  }else{
+    fadeTo(0,600);
+  }
+}
+function setPad(v){
+  on=v;
+  if(on){ padEl.muted=false; padEl.play().catch(()=>{}); }   // start inside the tap
+  applyPad();
+  const b=$('#padBtn');
+  b.setAttribute('aria-pressed',on);
+  $('#padLbl').textContent=on?'Music on':'Music off';
+}
+$('#padBtn').onclick=()=>setPad(!on);
+document.addEventListener('visibilitychange',applyPad);
+/* the reveal sting */
+function chime(){ try{ stingEl.currentTime=0; stingEl.muted=false; stingEl.play().catch(()=>{}); }catch(e){} }
+
+/* ================= VIDEOS: film (scored) and vlog (real audio), never both at once; the pad yields to both ================= */
+const film=$('#filmVid'),screen=$('#screen'),cue=$('#cue'),filmBar=$('#filmBar');
+const vlog=$('#vlogVid'),vlogbox=$('#vlogbox'),vlogBar=$('#vlogBar'),vlogSound=$('#vlogSound');
+function setState(box,st){ ['playing','paused','ended'].forEach(c=>box.classList.toggle(c,c===st)); }
+function wire(v,box,barEl){
+  v.addEventListener('play',()=>{ setState(box,'playing'); (v===film?vlog:film).pause(); });
+  v.addEventListener('pause',()=>{ if(!v.ended) setState(box,'paused'); });
+  v.addEventListener('ended',()=>setState(box,'ended'));
+  v.addEventListener('timeupdate',()=>{ if(v.duration) barEl.style.width=(v.currentTime/v.duration*100)+'%'; });
+  v.addEventListener('click',()=>{ if(v.paused) v.play().catch(()=>{}); else v.pause(); });
+}
+wire(film,screen,filmBar); wire(vlog,vlogbox,vlogBar);
+/* film: try sound-on inside the tap gesture; if the browser refuses, fall back to muted + "tap for sound" pill */
+const filmSound=$('#filmSound');
+function filmSoundUI(){ const m=film.muted; filmSound.hidden=!screen.classList.contains('playing'); filmSound.classList.toggle('on',!m); filmSound.setAttribute('aria-pressed',!m); filmSound.querySelector('span').textContent=m?'tap for sound':'sound on'; }
+function playFilmWithSound(){
+  film.muted=false;
+  const p=film.play();
+  if(p&&p.catch) p.catch(()=>{ film.muted=true; film.play().catch(()=>{}); filmSoundUI(); });
+  setTimeout(filmSoundUI,120);
+}
+$('#filmPlay').onclick=playFilmWithSound;
+$('#filmReplay').onclick=()=>{ film.currentTime=0; cue.classList.remove('show'); playFilmWithSound(); };
+filmSound.onclick=()=>{ film.muted=!film.muted; if(film.paused) film.play().catch(()=>{}); filmSoundUI(); };
+['play','pause','ended','volumechange'].forEach(e=>film.addEventListener(e,filmSoundUI));
+$('#vlogPlay').onclick=()=>vlog.play().catch(()=>{});
+/* scroll cue near the end of the film */
+film.addEventListener('timeupdate',()=>{ if(film.duration&&film.duration-film.currentTime<9) cue.classList.add('show'); });
+film.addEventListener('ended',()=>cue.classList.add('show'));
+cue.onclick=()=>$('#real').scrollIntoView({behavior:reduce?'auto':'smooth'});
+/* the music never plays over real audio: film score (when unmuted) or the vlog's voices */
+function loud(v){ return !v.muted&&(v===film?screen:vlogbox).classList.contains('playing'); }
+function syncDuck(){ ducked=loud(film)||loud(vlog); applyPad(); }
+['play','pause','ended','volumechange'].forEach(e=>film.addEventListener(e,syncDuck));
+vlogSound.onclick=()=>{
+  vlog.muted=!vlog.muted;
+  vlogSound.classList.toggle('on',!vlog.muted); vlogSound.setAttribute('aria-pressed',!vlog.muted);
+  vlogSound.querySelector('span').textContent=vlog.muted?'tap for sound':'sound on';
+  if(vlog.paused) vlog.play().catch(()=>{});
+  syncDuck();
+};
+['play','pause','ended','volumechange'].forEach(e=>vlog.addEventListener(e,syncDuck));
+
+/* ================= THE GAME: five cards, one truly random pick ================= */
+const PRIZES=[
+  {name:'Coach bag',    glyph:'\u{1F45C}', color:'var(--uno-red)',    note:'The one you keep opening on your phone and closing again. Stop closing it. Go pick it out, it’s yours.'},
+  {name:'Trip',         glyph:'✈️', color:'var(--uno-blue)',   note:'You pick the city. I handle the flights, the hotel, and the plane snacks. You just pack the good outfits.'},
+  {name:'Fancy dinner', glyph:'\u{1F37D}️', color:'var(--uno-green)',  note:'Candles, a menu I’ll pretend to understand, dessert without asking. And yes, you still get the first bite of mine.'},
+  {name:'Night out',    glyph:'\u{1F319}', color:'var(--uno-yellow)', note:'Dancing, late-night food, no alarm in the morning. I drive, you pick the music, I don’t complain about it.'},
+  {name:'Her Day',      glyph:'\u{1F451}', color:'#1a1a1a',           note:'A whole day that runs on your rules. Breakfast in bed, zero chores, nothing on the schedule you didn’t choose. You’re the main character from sunrise to sleep.'}
+];
+function shuffle(a){
+  const r=new Uint32Array(a.length);
+  if(window.crypto&&crypto.getRandomValues) crypto.getRandomValues(r); else for(let i=0;i<r.length;i++) r[i]=Math.random()*4294967296;
+  for(let i=a.length-1;i>0;i--){ const j=r[i]%(i+1); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+const deal=shuffle(PRIZES.slice());
+const hand=$('#hand'),cards=[...hand.querySelectorAll('.card')];
+let picked=false;
+
+/* the hand is dealt when the game scrolls into view, one card after another */
+hand.classList.add('predeal');
+cards.forEach((c,i)=>c.style.setProperty('--d',(i*0.11)+'s'));
+function dealIn(){
+  if(hand.classList.contains('dealt')) return;
+  hand.classList.add('dealt');
+  setTimeout(()=>hand.classList.remove('predeal'),1500);   // hands over to the idle float
+}
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ dealIn(); io.disconnect(); } });
+  },{threshold:.3});
+  io.observe(hand);
+}else dealIn();
+
+cards.forEach((c,i)=>{
+  const p=deal[i],front=c.querySelector('.front');
+  front.style.setProperty('--c',p.color); front.querySelector('.glyph').textContent=p.glyph;
+  c.addEventListener('click',()=>{
+    if(picked||!hand.classList.contains('dealt')) return; picked=true;
+    c.style.setProperty('--d','0s');
+    c.classList.add('picked'); hand.classList.add('locked');
+    cards.forEach(x=>{ x.disabled=true; });
+    c.setAttribute('aria-label','You drew: '+p.name);
+    $('#prizeName').textContent=p.name; $('#prizeNote').textContent=p.note;
+    /* the flip lands at ~.85s; the sting and the confetti land with it */
+    setTimeout(()=>{ chime(); if(!reduce) confetti(); }, reduce?50:620);
+    setTimeout(()=>{ $('#reveal').classList.add('show'); }, reduce?60:760);
+  });
+});
+
+/* ================= CONFETTI (canvas, ~2.6s, skipped under reduced motion) ================= */
+function confetti(){
+  const cv=$('#confetti'),cx=cv.getContext('2d');
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; cx.scale(dpr,dpr);
+  const cols=['#e6a23c','#f4ead9','#d7263d','#f5c531','#f0a4c2','#2f6fd6'];
+  const N=140,ps=[];
+  for(let i=0;i<N;i++) ps.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.55,vx:(Math.random()-.5)*14,vy:-Math.random()*13-4,w:5+Math.random()*6,h:3+Math.random()*5,r:Math.random()*Math.PI,vr:(Math.random()-.5)*.3,c:cols[i%cols.length]});
+  const t0=performance.now();
+  function step(t){
+    const k=(t-t0)/1000; cx.clearRect(0,0,innerWidth,innerHeight);
+    for(const p of ps){ p.vy+=.28; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.globalAlpha=Math.max(0,1-Math.max(0,k-1.6)); cx.fillStyle=p.c; cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cx.restore(); }
+    if(k<2.6) requestAnimationFrame(step); else cx.clearRect(0,0,innerWidth,innerHeight);
+  }
+  requestAnimationFrame(step);
+}
+window.__ep2={get deal(){return deal.map(p=>p.name);},padLevel(){return (on&&!ducked)?padEl.volume:0;},dealIn};
+})();
+</script>
+
+</body>
+</html>
