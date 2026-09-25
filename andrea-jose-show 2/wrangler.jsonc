@@ -1,0 +1,6 @@
+{
+  // Static site only — no Worker code, no build step.
+  "name": "andrea-jose-show",
+  "compatibility_date": "2026-09-25",
+  "assets": { "directory": "./" }
+}
